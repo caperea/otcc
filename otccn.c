@@ -60,7 +60,7 @@ int tok, tokc, tokl, ch, vars, rsym, prog, ind, loc, glo, file, sym_stk, dstk, d
 
 /* tokens in string heap */
 #define TAG_TOK    ' '
-#define TAG_MACRO  2
+#define TAG_MACRO  2 /* STX, Start of Text */
 
 /*
  * pdef - 将字符写入定义栈（dstk）
@@ -876,8 +876,12 @@ main(n, t)
         t = t + 4;
         file = fopen(*(int *)t, "r");
     }
-    dstk = strcpy(sym_stk = calloc(1, ALLOC_SIZE), 
-                  " int if else while break return for define main ") + TOK_STR_SIZE;
+    // Allocate symbol table and initialize keywords
+    sym_stk = calloc(1, ALLOC_SIZE);
+    strcpy(sym_stk, " int if else while break return for define main ");
+    dstk = sym_stk + TOK_STR_SIZE;
+    
+    // Allocate global data space
     glo = calloc(1, ALLOC_SIZE);
     ind = prog = calloc(1, ALLOC_SIZE);
     vars = calloc(1, ALLOC_SIZE);
